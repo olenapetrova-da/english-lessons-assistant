@@ -1,0 +1,332 @@
+{
+  "name": "WF2-LESSON-PROCESSOR",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "english-lessons-processor",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [-500, 300],
+      "id": "webhook_wf2",
+      "name": "Webhook from WF1",
+      "webhookId": "english-lessons-processor",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "cond_wf2_token",
+              "leftValue": "={{ $json.headers[\"x-worker-token\"] }}",
+              "rightValue": "__WF2_SHARED_SECRET__",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [-240, 300],
+      "id": "if_auth_wf2",
+      "name": "Auth: WF2 shared secret"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "tableId": "processing_log",
+        "filterType": "string",
+        "matchType": "allFilters",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "file_id",
+              "condition": "eq",
+              "keyValue": "={{ $node[\"Webhook from WF1\"].json.body.fileId }}"
+            }
+          ]
+        },
+        "fieldsUi": {
+          "fieldValues": [
+            { "fieldId": "status", "fieldValue": "processing" }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [20, 300],
+      "id": "supabase_set_processing",
+      "name": "Supabase: set processing",
+      "credentials": {
+        "supabaseApi": {
+          "id": "__SUPABASE_CREDENTIAL_ID__",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "=https://www.googleapis.com/drive/v3/files/{{ $node[\"Webhook from WF1\"].json.body.fileId }}/export",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            { "name": "mimeType", "value": "text/plain" }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [280, 300],
+      "id": "http_get_doc",
+      "name": "Google Drive: export doc as text",
+      "credentials": {
+        "oAuth2Api": {
+          "id": "__GOOGLE_OAUTH2_CREDENTIAL_ID__",
+          "name": "Google Drive OAuth2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "text",
+        "operation": "message",
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list"
+        },
+        "messages": {
+          "values": [
+            {
+              "role": "system",
+              "content": "You are an assistant that analyses English lesson notes. Extract structured data from the lesson text provided and return ONLY valid JSON with this exact shape:\n{\n  \"topic\": \"string — main topic of the lesson\",\n  \"lesson_date\": \"YYYY-MM-DD or null\",\n  \"vocabulary\": [\n    { \"word\": \"string\", \"definition\": \"string\", \"example\": \"string or null\" }\n  ],\n  \"homework\": [\n    { \"description\": \"string\", \"due_date\": \"YYYY-MM-DD or null\" }\n  ]\n}\nIf a field is not mentioned in the text, use null or an empty array. Return only JSON, no markdown fences."
+            },
+            {
+              "role": "user",
+              "content": "={{ $node[\"Google Drive: export doc as text\"].json.data }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [540, 300],
+      "id": "openai_extract",
+      "name": "OpenAI: extract lesson data",
+      "credentials": {
+        "openAiApi": {
+          "id": "__OPENAI_CREDENTIAL_ID__",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const raw = $input.first().json.message.content;\nconst parsed = JSON.parse(raw);\nconst fileId = $node[\"Webhook from WF1\"].json.body.fileId;\nreturn [{ json: { ...parsed, fileId, webViewLink: $node[\"Webhook from WF1\"].json.body.webViewLink } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [800, 300],
+      "id": "code_parse",
+      "name": "Parse GPT response"
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "tableId": "lessons",
+        "fieldsUi": {
+          "fieldValues": [
+            { "fieldId": "file_id",     "fieldValue": "={{ $json.fileId }}" },
+            { "fieldId": "topic",       "fieldValue": "={{ $json.topic }}" },
+            { "fieldId": "lesson_date", "fieldValue": "={{ $json.lesson_date }}" },
+            { "fieldId": "doc_url",     "fieldValue": "={{ $json.webViewLink }}" },
+            { "fieldId": "raw_text",    "fieldValue": "={{ $node[\"Google Drive: export doc as text\"].json.data }}" }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [1060, 300],
+      "id": "supabase_insert_lesson",
+      "name": "Supabase: insert lesson",
+      "credentials": {
+        "supabaseApi": {
+          "id": "__SUPABASE_CREDENTIAL_ID__",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const lessonId = $input.first().json.id;\nconst vocab = $node[\"Parse GPT response\"].json.vocabulary || [];\nreturn vocab.map(v => ({ json: { lesson_id: lessonId, word: v.word, definition: v.definition || null, example: v.example || null } }));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1320, 200],
+      "id": "code_vocab_rows",
+      "name": "Build vocabulary rows"
+    },
+    {
+      "parameters": {
+        "jsCode": "const lessonId = $node[\"Supabase: insert lesson\"].json.id;\nconst hw = $node[\"Parse GPT response\"].json.homework || [];\nreturn hw.map(h => ({ json: { lesson_id: lessonId, description: h.description, due_date: h.due_date || null } }));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1320, 400],
+      "id": "code_hw_rows",
+      "name": "Build homework rows"
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "tableId": "vocabulary",
+        "fieldsUi": {
+          "fieldValues": [
+            { "fieldId": "lesson_id",  "fieldValue": "={{ $json.lesson_id }}" },
+            { "fieldId": "word",       "fieldValue": "={{ $json.word }}" },
+            { "fieldId": "definition", "fieldValue": "={{ $json.definition }}" },
+            { "fieldId": "example",    "fieldValue": "={{ $json.example }}" }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [1580, 200],
+      "id": "supabase_insert_vocab",
+      "name": "Supabase: insert vocabulary",
+      "credentials": {
+        "supabaseApi": {
+          "id": "__SUPABASE_CREDENTIAL_ID__",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "tableId": "homework",
+        "fieldsUi": {
+          "fieldValues": [
+            { "fieldId": "lesson_id",   "fieldValue": "={{ $json.lesson_id }}" },
+            { "fieldId": "description", "fieldValue": "={{ $json.description }}" },
+            { "fieldId": "due_date",    "fieldValue": "={{ $json.due_date }}" }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [1580, 400],
+      "id": "supabase_insert_hw",
+      "name": "Supabase: insert homework",
+      "credentials": {
+        "supabaseApi": {
+          "id": "__SUPABASE_CREDENTIAL_ID__",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "tableId": "processing_log",
+        "filterType": "string",
+        "matchType": "allFilters",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "file_id",
+              "condition": "eq",
+              "keyValue": "={{ $node[\"Webhook from WF1\"].json.body.fileId }}"
+            }
+          ]
+        },
+        "fieldsUi": {
+          "fieldValues": [
+            { "fieldId": "status", "fieldValue": "done" }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [1840, 300],
+      "id": "supabase_set_done",
+      "name": "Supabase: set done",
+      "credentials": {
+        "supabaseApi": {
+          "id": "__SUPABASE_CREDENTIAL_ID__",
+          "name": "Supabase account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook from WF1": {
+      "main": [[{ "node": "Auth: WF2 shared secret", "type": "main", "index": 0 }]]
+    },
+    "Auth: WF2 shared secret": {
+      "main": [
+        [{ "node": "Supabase: set processing", "type": "main", "index": 0 }]
+      ]
+    },
+    "Supabase: set processing": {
+      "main": [[{ "node": "Google Drive: export doc as text", "type": "main", "index": 0 }]]
+    },
+    "Google Drive: export doc as text": {
+      "main": [[{ "node": "OpenAI: extract lesson data", "type": "main", "index": 0 }]]
+    },
+    "OpenAI: extract lesson data": {
+      "main": [[{ "node": "Parse GPT response", "type": "main", "index": 0 }]]
+    },
+    "Parse GPT response": {
+      "main": [[{ "node": "Supabase: insert lesson", "type": "main", "index": 0 }]]
+    },
+    "Supabase: insert lesson": {
+      "main": [
+        [
+          { "node": "Build vocabulary rows", "type": "main", "index": 0 },
+          { "node": "Build homework rows",   "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "Build vocabulary rows": {
+      "main": [[{ "node": "Supabase: insert vocabulary", "type": "main", "index": 0 }]]
+    },
+    "Build homework rows": {
+      "main": [[{ "node": "Supabase: insert homework", "type": "main", "index": 0 }]]
+    },
+    "Supabase: insert vocabulary": {
+      "main": [[{ "node": "Supabase: set done", "type": "main", "index": 0 }]]
+    },
+    "Supabase: insert homework": {
+      "main": [[{ "node": "Supabase: set done", "type": "main", "index": 0 }]]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "meta": {
+    "instanceId": "__YOUR_N8N_INSTANCE_ID__"
+  }
+}

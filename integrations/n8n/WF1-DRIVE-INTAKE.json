@@ -1,0 +1,267 @@
+{
+  "name": "WF1-DRIVE-INTAKE",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "english-lessons-intake",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [-300, 300],
+      "id": "webhook_prod",
+      "name": "Production URL",
+      "webhookId": "english-lessons-intake",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "cond_worker_token",
+              "leftValue": "={{ $json.headers[\"x-worker-token\"] }}",
+              "rightValue": "__SET_IN_N8N__",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [-40, 300],
+      "id": "if_auth",
+      "name": "Auth: X-Worker-Token == N8N_SHARED_SECRET"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{ \"error\": \"forbidden\" }",
+        "options": { "responseCode": 403 }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [220, 480],
+      "id": "resp_forbidden",
+      "name": "Respond 403 forbidden"
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "tableId": "processing_log",
+        "returnAll": false,
+        "limit": 1,
+        "filterType": "string",
+        "matchType": "allFilters",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "file_id",
+              "condition": "eq",
+              "keyValue": "={{ $node[\"Production URL\"].json.body.fileId }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [220, 300],
+      "id": "supabase_check_dup",
+      "name": "Supabase: check duplicate",
+      "alwaysOutputData": true,
+      "credentials": {
+        "supabaseApi": {
+          "id": "__SUPABASE_CREDENTIAL_ID__",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "cond_found",
+              "leftValue": "={{ $json.id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [480, 300],
+      "id": "if_dup",
+      "name": "Idempotency: record exists?"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{ \"status\": \"duplicate_ignored\" }",
+        "options": { "responseCode": 200 }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [740, 200],
+      "id": "resp_dup",
+      "name": "Respond 200 duplicate_ignored"
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "tableId": "processing_log",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "file_id",
+              "fieldValue": "={{ $node[\"Production URL\"].json.body.fileId }}"
+            },
+            {
+              "fieldId": "file_name",
+              "fieldValue": "={{ $node[\"Production URL\"].json.body.name }}"
+            },
+            {
+              "fieldId": "mime_type",
+              "fieldValue": "={{ $node[\"Production URL\"].json.body.mimeType }}"
+            },
+            {
+              "fieldId": "web_view_link",
+              "fieldValue": "={{ $node[\"Production URL\"].json.body.webViewLink }}"
+            },
+            {
+              "fieldId": "status",
+              "fieldValue": "pending"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [740, 400],
+      "id": "supabase_insert",
+      "name": "Supabase: insert pending",
+      "credentials": {
+        "supabaseApi": {
+          "id": "__SUPABASE_CREDENTIAL_ID__",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "__WF2_WEBHOOK_URL__",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "x-worker-token",
+              "value": "__WF2_SHARED_SECRET__"
+            },
+            {
+              "name": "content-type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "fileId",
+              "value": "={{ $node[\"Production URL\"].json.body.fileId }}"
+            },
+            {
+              "name": "fileName",
+              "value": "={{ $node[\"Production URL\"].json.body.name }}"
+            },
+            {
+              "name": "webViewLink",
+              "value": "={{ $node[\"Production URL\"].json.body.webViewLink }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1000, 400],
+      "id": "http_trigger_wf2",
+      "name": "Trigger WF2"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{ \"status\": \"new_file_accepted\" }",
+        "options": { "responseCode": 200 }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [1260, 400],
+      "id": "resp_accepted",
+      "name": "Respond 200 new_file_accepted"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Production URL": {
+      "main": [[{ "node": "Auth: X-Worker-Token == N8N_SHARED_SECRET", "type": "main", "index": 0 }]]
+    },
+    "Auth: X-Worker-Token == N8N_SHARED_SECRET": {
+      "main": [
+        [{ "node": "Supabase: check duplicate", "type": "main", "index": 0 }],
+        [{ "node": "Respond 403 forbidden",     "type": "main", "index": 0 }]
+      ]
+    },
+    "Supabase: check duplicate": {
+      "main": [[{ "node": "Idempotency: record exists?", "type": "main", "index": 0 }]]
+    },
+    "Idempotency: record exists?": {
+      "main": [
+        [{ "node": "Respond 200 duplicate_ignored", "type": "main", "index": 0 }],
+        [{ "node": "Supabase: insert pending",       "type": "main", "index": 0 }]
+      ]
+    },
+    "Supabase: insert pending": {
+      "main": [[{ "node": "Trigger WF2", "type": "main", "index": 0 }]]
+    },
+    "Trigger WF2": {
+      "main": [[{ "node": "Respond 200 new_file_accepted", "type": "main", "index": 0 }]]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "meta": {
+    "instanceId": "__YOUR_N8N_INSTANCE_ID__"
+  }
+}
