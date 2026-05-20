@@ -1,5 +1,5 @@
 {
-  "name": "WF2-LESSON-PROCESSOR",
+  "name": "ENG2-LESSON-PROCESSOR",
   "nodes": [
     {
       "parameters": {
@@ -12,7 +12,7 @@
       "typeVersion": 2.1,
       "position": [-500, 300],
       "id": "webhook_wf2",
-      "name": "Webhook from WF1",
+      "name": "Webhook from ENG1",
       "webhookId": "english-lessons-processor",
       "onError": "continueRegularOutput"
     },
@@ -29,7 +29,7 @@
             {
               "id": "cond_wf2_token",
               "leftValue": "={{ $json.headers[\"x-worker-token\"] }}",
-              "rightValue": "__WF2_SHARED_SECRET__",
+              "rightValue": "138f8dfb-50ea-4c3d-957d-4308d8830a52",
               "operator": {
                 "type": "string",
                 "operation": "equals",
@@ -45,7 +45,7 @@
       "typeVersion": 2.3,
       "position": [-240, 300],
       "id": "if_auth_wf2",
-      "name": "Auth: WF2 shared secret"
+      "name": "Auth: ENG2 shared secret"
     },
     {
       "parameters": {
@@ -280,10 +280,10 @@
   ],
   "pinData": {},
   "connections": {
-    "Webhook from WF1": {
-      "main": [[{ "node": "Auth: WF2 shared secret", "type": "main", "index": 0 }]]
+    "Webhook from ENG1": {
+      "main": [[{ "node": "Auth: ENG2 shared secret", "type": "main", "index": 0 }]]
     },
-    "Auth: WF2 shared secret": {
+    "Auth: ENG2 shared secret": {
       "main": [
         [{ "node": "Supabase: set processing", "type": "main", "index": 0 }]
       ]

@@ -1,5 +1,5 @@
 {
-  "name": "WF1-DRIVE-INTAKE",
+  "name": "ENG1-DRIVE-INTAKE",
   "nodes": [
     {
       "parameters": {
@@ -214,7 +214,7 @@
       "typeVersion": 4.2,
       "position": [1000, 400],
       "id": "http_trigger_wf2",
-      "name": "Trigger WF2"
+      "name": "Trigger ENG2"
     },
     {
       "parameters": {
@@ -250,13 +250,13 @@
       ]
     },
     "Supabase: insert pending": {
-      "main": [[{ "node": "Trigger WF2", "type": "main", "index": 0 }]]
+      "main": [[{ "node": "Trigger ENG2", "type": "main", "index": 0 }]]
     },
-    "Trigger WF2": {
+    "Trigger ENG2": {
       "main": [[{ "node": "Respond 200 new_file_accepted", "type": "main", "index": 0 }]]
     }
   },
-  "active": false,
+  "active": true,
   "settings": {
     "executionOrder": "v1",
     "availableInMCP": false
