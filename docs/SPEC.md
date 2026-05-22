@@ -36,6 +36,18 @@ Cloudflare Worker  ────────────────────�
                                                                   ▼
                                                              Supabase DB
                                                (processing_log, lessons, vocabulary, homework)
+                                                                  │
+                                                                  │ HTTPS (Edge Function)
+                                                                  ▼
+                                                       Supabase Edge Function (lesson-api)
+                                                            - Serves data to frontend
+                                                            - Handles CORS
+                                                            - ?action=lesson_prep
+                                                            - ?action=vocabulary
+                                                                  │
+                                                                  ▼
+                                                    Frontend (UI/english_lessons_assistant.html)
+                                                       Standalone HTML — hosted on GitHub Pages
 ```
 
 ---
@@ -169,6 +181,29 @@ Homework tasks extracted per lesson.
 | `due_date` | date | |
 | `completed` | boolean | default false |
 | `created_at` | timestamptz | |
+
+---
+
+## Frontend
+
+A standalone HTML file (`UI/english_lessons_assistant.html`) hosted on GitHub Pages. It calls the Supabase Edge Function directly — no backend server required.
+
+## Supabase Configuration
+
+### Row Level Security (RLS)
+RLS is **disabled** on all four tables: `processing_log`, `lessons`, `vocabulary`, `homework`. Access is controlled at the Edge Function level instead.
+
+### Edge Function: `lesson-api`
+A Supabase Edge Function that serves lesson data to the frontend. It exists to handle CORS restrictions that would otherwise block direct browser calls to the Supabase REST API.
+
+**JWT verification:** disabled on the function.
+
+**Supported actions:**
+
+| Query param | Description |
+|---|---|
+| `?action=lesson_prep` | Returns lesson data for the teacher's lesson prep view |
+| `?action=vocabulary` | Returns vocabulary items for review |
 
 ---
 
