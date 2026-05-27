@@ -96,7 +96,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const raw = $input.first().json.message.content;\nconst parsed = JSON.parse(raw);\nconst fileId = $node[\"Webhook from ENG1\"].json.body.fileId;\nreturn [{ json: { ...parsed, fileId, webViewLink: $node[\"Webhook from ENG1\"].json.body.webViewLink } }];"
+        "jsCode": "const raw = $input.first().json.message.content;\nconst parsed = JSON.parse(raw);\nconst fileId = $node[\"Webhook from ENG1\"].json.body.fileId;\nconst result = { ...parsed, fileId, webViewLink: $node[\"Webhook from ENG1\"].json.body.webViewLink };\nif (result.lesson_date == null) delete result.lesson_date;\nif (result.homework_due_date == null) delete result.homework_due_date;\nreturn [{ json: result }];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,

@@ -6,12 +6,6 @@
 
 ## Backlog
 
-- [ ] **Step 3** — Reprocess existing files
-  - Clear current data from `lessons`, `vocabulary`, `homework`
-  - Reset `status` to `pending` in `processing_log` for all existing files
-  - Re-trigger ENG2 for all files
-  - Verify: dates, URLs, file_type extracted correctly
-
 - [ ] **Step 4** — Google Calendar integration in Edge Function
   - Add `?action=next_lesson` to `lesson-api` (see ADR-009)
   - Query Google Calendar API for next upcoming English lesson event
@@ -54,3 +48,4 @@
 - [x] ENG2 Google Drive auth migrated from OAuth2 user credential to Service Account (see ADR-011)
 - [x] Frontend Edge Function URL restored after over-broad git history purge
 - [x] `help.md` created as project knowledge base (Drive watch expiry, Supabase UPDATE workaround, OAuth vs Service Account)
+- [x] **Step 3** — All 6 files reprocessed with new ENG2 prompt; null date fix applied in Code node (delete null fields before Supabase insert)
