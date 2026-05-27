@@ -2,18 +2,6 @@
 
 ## In progress
 
-- [ ] **Step 1** — Update ENG2 extraction prompt
-  - Pass filename to GPT alongside doc text
-  - Parse `lesson_date` and `homework_due_date` from filename patterns (see ADR-008)
-  - Extract URLs from homework items (see ADR-010)
-  - Add `file_type` field: `notes` / `homework` / `both`
-
-- [ ] **Step 2** — Supabase schema changes
-  - Add `homework_due_date` date column to `lessons`
-  - Add `file_type` text column to `lessons`
-  - Add `url` text column to `homework`
-  - Write and run migration SQL
-
 ---
 
 ## Backlog
@@ -52,6 +40,10 @@
 - [x] Supabase schema created — initial 4 tables
 - [x] Supabase Edge Function `lesson-api` deployed (see ADR-006)
 - [x] RLS disabled on all tables (see ADR-005)
+- [x] ENG2 extraction prompt updated: filename passed to GPT, dates from filename, homework URLs, file_type (see ADR-008, ADR-010)
+- [x] ENG2 null date fix: `?? undefined` on date fields in Supabase: insert lesson
+- [x] ENG1 Trigger WF2: Continue on Error enabled — prevents retry loops on ENG2 failure
+- [x] Supabase migration 002: added `homework_due_date`, `file_type` to lessons; `url` to homework
 - [x] Frontend `english-lessons.html` built — v1
 - [x] Repo created and HTML committed to GitHub
 - [x] GitHub Pages enabled
