@@ -6,12 +6,6 @@
 
 ## Backlog
 
-- [ ] **Step 4** — Google Calendar integration in Edge Function
-  - Add `?action=next_lesson` to `lesson-api` (see ADR-009)
-  - Query Google Calendar API for next upcoming English lesson event
-  - Return: date, Meet link, event title
-  - Add Google OAuth credentials to Edge Function secrets
-
 - [ ] **Step 5** — Manual: test data after reprocessing
   - Check Supabase tables for correct dates, URLs, file_type values
   - Report extraction errors to Claude Code for prompt tuning
@@ -49,3 +43,4 @@
 - [x] Frontend Edge Function URL restored after over-broad git history purge
 - [x] `help.md` created as project knowledge base (Drive watch expiry, Supabase UPDATE workaround, OAuth vs Service Account)
 - [x] **Step 3** — All 6 files reprocessed with new ENG2 prompt; null date fix applied in Code node (delete null fields before Supabase insert)
+- [x] **Step 4** — `?action=next_lesson` added to Edge Function; Google Calendar API via Service Account; returns date, Meet link, title
