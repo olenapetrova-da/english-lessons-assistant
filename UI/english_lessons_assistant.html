@@ -29,28 +29,16 @@
     font-size: 15px;
     line-height: 1.6;
   }
-  header {
-    padding: 2rem 2rem 0;
-    max-width: 720px;
-    margin: 0 auto;
-  }
-  h1 {
-    font-family: 'DM Serif Display', serif;
-    font-size: 28px;
-    font-weight: 400;
-    color: var(--text);
-    letter-spacing: -0.3px;
-  }
+  header { padding: 2rem 2rem 0; max-width: 720px; margin: 0 auto; }
+  h1 { font-family: 'DM Serif Display', serif; font-size: 28px; font-weight: 400; letter-spacing: -0.3px; }
   h1 span { color: var(--accent); }
   .subtitle { font-size: 13px; color: var(--muted); margin-top: 4px; }
 
   .tabs {
     display: flex;
-    gap: 0;
-    margin: 1.5rem 2rem 0;
+    margin: 1.5rem auto 0;
     max-width: 720px;
-    margin-left: auto;
-    margin-right: auto;
+    padding: 0 2rem;
     border-bottom: 1.5px solid var(--border);
   }
   .tab {
@@ -69,11 +57,7 @@
   .tab:hover { color: var(--text); }
   .tab.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 500; }
 
-  main {
-    max-width: 720px;
-    margin: 0 auto;
-    padding: 1.5rem 2rem 3rem;
-  }
+  main { max-width: 720px; margin: 0 auto; padding: 1.5rem 2rem 3rem; }
 
   .card {
     background: var(--surface);
@@ -90,13 +74,7 @@
     color: var(--hint);
     margin-bottom: 10px;
   }
-  .topic {
-    font-family: 'DM Serif Display', serif;
-    font-size: 20px;
-    font-weight: 400;
-    color: var(--text);
-    line-height: 1.3;
-  }
+  .topic { font-family: 'DM Serif Display', serif; font-size: 20px; font-weight: 400; line-height: 1.3; }
   .doc-link {
     display: inline-flex;
     align-items: center;
@@ -109,56 +87,58 @@
   }
   .doc-link:hover { text-decoration: underline; }
 
-  .hw-list { list-style: none; }
-  .hw-item {
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    padding: 9px 0;
-    border-bottom: 1px solid var(--border);
-    font-size: 14px;
-  }
-  .hw-item:last-child { border-bottom: none; }
-  .hw-dot {
-    width: 7px; height: 7px;
-    border-radius: 50%;
+  .next-card { background: var(--accent-light); border-color: #b7d9c8; }
+  .next-date { font-family: 'DM Serif Display', serif; font-size: 20px; }
+  .meet-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 12px;
+    padding: 8px 18px;
     background: var(--accent);
-    margin-top: 6px;
-    flex-shrink: 0;
-  }
-  .hw-text { flex: 1; color: var(--text); }
-  .hw-due {
-    font-size: 12px;
-    color: var(--warn);
-    background: var(--warn-light);
-    padding: 2px 8px;
-    border-radius: 20px;
-    white-space: nowrap;
-    flex-shrink: 0;
-  }
-
-  .vocab-grid { display: flex; flex-direction: column; gap: 0; }
-  .vocab-item {
-    padding: 10px 0;
-    border-bottom: 1px solid var(--border);
-  }
-  .vocab-item:last-child { border-bottom: none; }
-  .word {
-    font-weight: 500;
-    color: var(--text);
-    font-size: 15px;
-  }
-  .definition {
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
     font-size: 13px;
-    color: var(--muted);
-    margin-top: 2px;
+    font-weight: 500;
+    transition: background 0.15s;
   }
+  .meet-btn:hover { background: var(--accent-muted); }
 
-  .search-bar {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 1rem;
-  }
+  .hw-list { list-style: none; }
+  .hw-item { display: flex; align-items: flex-start; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--border); font-size: 14px; }
+  .hw-item:last-child { border-bottom: none; }
+  .hw-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); margin-top: 6px; flex-shrink: 0; }
+  .hw-text { flex: 1; color: var(--text); }
+  .hw-link { font-size: 12px; color: var(--accent); text-decoration: none; font-weight: 500; margin-left: 4px; }
+  .hw-link:hover { text-decoration: underline; }
+  .hw-due { font-size: 12px; color: var(--warn); background: var(--warn-light); padding: 2px 8px; border-radius: 20px; white-space: nowrap; flex-shrink: 0; }
+
+  .vocab-grid { display: flex; flex-direction: column; }
+  .vocab-item { padding: 10px 0; border-bottom: 1px solid var(--border); }
+  .vocab-item:last-child { border-bottom: none; }
+  .word { font-weight: 500; font-size: 15px; }
+  .definition { font-size: 13px; color: var(--muted); margin-top: 2px; }
+
+  /* All lessons tab */
+  .date-group { margin-bottom: 1.5rem; }
+  .date-header { font-size: 12px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: var(--hint); margin-bottom: 8px; padding-left: 2px; }
+  .lesson-row { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 6px; overflow: hidden; }
+  .lesson-header { display: flex; align-items: center; gap: 10px; padding: 12px 16px; cursor: pointer; user-select: none; }
+  .lesson-header:hover { background: #faf8f3; }
+  .lesson-topic-text { flex: 1; font-size: 14px; font-weight: 500; }
+  .file-badge { font-size: 11px; padding: 2px 8px; border-radius: 20px; font-weight: 500; flex-shrink: 0; }
+  .file-badge.notes { background: var(--accent-light); color: var(--accent); }
+  .file-badge.homework { background: var(--warn-light); color: var(--warn); }
+  .file-badge.both { background: #eef0f8; color: #3d5a9e; }
+  .expand-icon { font-size: 11px; color: var(--hint); flex-shrink: 0; transition: transform 0.15s; }
+  .lesson-body { padding: 0 16px 14px; border-top: 1px solid var(--border); display: none; }
+  .lesson-body.open { display: block; }
+  .body-section { margin-top: 12px; }
+  .body-section-label { font-size: 11px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: var(--hint); margin-bottom: 8px; }
+
+  /* Vocabulary tab */
+  .search-bar { display: flex; gap: 8px; margin-bottom: 1rem; }
   input[type="text"] {
     flex: 1;
     padding: 9px 14px;
@@ -186,30 +166,10 @@
     max-width: 200px;
   }
   select:focus { border-color: var(--accent); }
+  .count-badge { display: inline-block; font-size: 12px; color: var(--accent); background: var(--accent-light); padding: 2px 10px; border-radius: 20px; margin-bottom: 10px; font-weight: 500; }
 
-  .count-badge {
-    display: inline-block;
-    font-size: 12px;
-    color: var(--accent);
-    background: var(--accent-light);
-    padding: 2px 10px;
-    border-radius: 20px;
-    margin-bottom: 10px;
-    font-weight: 500;
-  }
-
-  .empty {
-    text-align: center;
-    padding: 3rem 1rem;
-    color: var(--hint);
-    font-size: 14px;
-  }
-  .loading {
-    text-align: center;
-    padding: 3rem 1rem;
-    color: var(--hint);
-    font-size: 14px;
-  }
+  .empty { text-align: center; padding: 3rem 1rem; color: var(--hint); font-size: 14px; }
+  .loading { text-align: center; padding: 3rem 1rem; color: var(--hint); font-size: 14px; }
   .loading::after {
     content: '';
     display: inline-block;
@@ -222,22 +182,13 @@
     vertical-align: middle;
   }
   @keyframes spin { to { transform: rotate(360deg); } }
-
-  .error {
-    background: #fef2f2;
-    border: 1px solid #fecaca;
-    border-radius: var(--radius);
-    padding: 12px 16px;
-    font-size: 13px;
-    color: #b91c1c;
-    word-break: break-all;
-  }
+  .error { background: #fef2f2; border: 1px solid #fecaca; border-radius: var(--radius); padding: 12px 16px; font-size: 13px; color: #b91c1c; word-break: break-all; }
 
   @media (max-width: 600px) {
     header, .tabs, main { padding-left: 1rem; padding-right: 1rem; }
-    .tabs { margin-left: 0; margin-right: 0; }
     .search-bar { flex-direction: column; }
     select { max-width: 100%; }
+    .tab { padding: 10px 14px; }
   }
 </style>
 </head>
@@ -248,22 +199,35 @@
   <p class="subtitle">Lesson prep & vocabulary assistant</p>
 </header>
 
-<div class="tabs" id="tabs">
+<div class="tabs">
   <button class="tab active" onclick="switchTab('prep')">Lesson prep</button>
+  <button class="tab" onclick="switchTab('lessons')">All lessons</button>
   <button class="tab" onclick="switchTab('vocab')">Vocabulary</button>
 </div>
 
 <main>
   <div id="prep-panel"></div>
+  <div id="lessons-panel" style="display:none"></div>
   <div id="vocab-panel" style="display:none"></div>
 </main>
 
 <script>
 const API = 'https://tlbjfqnvnquoqwfuvdnx.supabase.co/functions/v1/lesson-api';
 
+function esc(s) {
+  return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
 function fmt(d) {
   if (!d) return null;
   return new Date(d).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+}
+
+function fmtDateTime(d) {
+  if (!d) return null;
+  const dt = new Date(d);
+  return dt.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' })
+    + ' · ' + dt.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
 }
 
 async function fetchApi(action) {
@@ -272,21 +236,38 @@ async function fetchApi(action) {
   return r.json();
 }
 
+// ---- Tab 1: Lesson prep ----
+
 async function loadPrep() {
   const el = document.getElementById('prep-panel');
   el.innerHTML = '<p class="loading">Loading</p>';
   try {
-    const d = await fetchApi('lesson_prep');
-    const { latest, prev, homework, prevVocab } = d;
-    if (!latest) { el.innerHTML = '<p class="empty">No lessons found yet.</p>'; return; }
+    const [prep, next] = await Promise.all([
+      fetchApi('lesson_prep'),
+      fetchApi('next_lesson').catch(() => ({ next_lesson: null }))
+    ]);
 
+    const { latest, homework, latestVocab } = prep;
+    const nextLesson = next.next_lesson;
     let html = '';
 
+    if (nextLesson) {
+      html += '<div class="card next-card">';
+      html += '<p class="card-label">Next lesson</p>';
+      html += '<p class="next-date">' + esc(fmtDateTime(nextLesson.date)) + '</p>';
+      if (nextLesson.meet_link) {
+        html += '<a class="meet-btn" href="' + esc(nextLesson.meet_link) + '" target="_blank">&#9654; Join Google Meet</a>';
+      }
+      html += '</div>';
+    }
+
+    if (!latest) { el.innerHTML = html + '<p class="empty">No lessons found yet.</p>'; return; }
+
     html += '<div class="card">';
-    html += '<p class="card-label">Latest lesson</p>';
-    html += '<p class="topic">' + (latest.topic || 'Untitled') + '</p>';
+    html += '<p class="card-label">Previous lesson</p>';
+    html += '<p class="topic">' + esc(latest.topic || 'Untitled') + '</p>';
     if (latest.lesson_date) html += '<p style="font-size:13px;color:var(--muted);margin-top:6px">' + fmt(latest.lesson_date) + '</p>';
-    if (latest.doc_url) html += '<a class="doc-link" href="' + latest.doc_url + '" target="_blank">↗ Open lesson doc</a>';
+    if (latest.doc_url) html += '<a class="doc-link" href="' + esc(latest.doc_url) + '" target="_blank">&#8599; Open lesson doc</a>';
     html += '</div>';
 
     const latestHW = (homework || []).filter(h => h.lesson_id === latest.id);
@@ -295,58 +276,159 @@ async function loadPrep() {
       html += '<p class="card-label">Homework</p>';
       html += '<ul class="hw-list">';
       latestHW.forEach(h => {
-        html += '<li class="hw-item"><span class="hw-dot"></span><span class="hw-text">' + h.description + '</span>';
+        html += '<li class="hw-item"><span class="hw-dot"></span>';
+        html += '<span class="hw-text">' + esc(h.description);
+        if (h.url) html += '<a class="hw-link" href="' + esc(h.url) + '" target="_blank">&#8599; Link</a>';
+        html += '</span>';
         if (h.due_date) html += '<span class="hw-due">Due ' + fmt(h.due_date) + '</span>';
         html += '</li>';
       });
       html += '</ul></div>';
     }
 
-    if (prev) {
+    if (latestVocab && latestVocab.length) {
       html += '<div class="card">';
-      html += '<p class="card-label">Vocabulary from previous lesson' + (prev.topic ? ' — ' + prev.topic : '') + '</p>';
-      if (prevVocab && prevVocab.length) {
-        html += '<div class="vocab-grid">';
-        prevVocab.forEach(v => {
-          html += '<div class="vocab-item"><span class="word">' + v.word + '</span>';
-          if (v.definition) html += '<p class="definition">' + v.definition + '</p>';
-          html += '</div>';
-        });
+      html += '<p class="card-label">Vocabulary &middot; ' + esc(latest.topic || '') + '</p>';
+      html += '<div class="vocab-grid">';
+      latestVocab.forEach(v => {
+        html += '<div class="vocab-item"><span class="word">' + esc(v.word) + '</span>';
+        if (v.definition) html += '<p class="definition">' + esc(v.definition) + '</p>';
         html += '</div>';
-      } else {
-        html += '<p style="font-size:13px;color:var(--hint)">No vocabulary stored for this lesson.</p>';
-      }
-      html += '</div>';
+      });
+      html += '</div></div>';
     }
 
     el.innerHTML = html;
   } catch(e) {
-    el.innerHTML = '<div class="error">Error: ' + e.message + '</div>';
+    el.innerHTML = '<div class="error">Error: ' + esc(e.message) + '</div>';
   }
 }
 
-let allVocab = [], allLessons = [];
+// ---- Tab 2: All lessons ----
+
+let allLessonsCache = null;
+
+async function loadAllLessons() {
+  const el = document.getElementById('lessons-panel');
+  if (allLessonsCache) { renderAllLessons(); return; }
+  el.innerHTML = '<p class="loading">Loading</p>';
+  try {
+    allLessonsCache = await fetchApi('all_lessons');
+    renderAllLessons();
+  } catch(e) {
+    el.innerHTML = '<div class="error">Error: ' + esc(e.message) + '</div>';
+  }
+}
+
+function renderAllLessons() {
+  const el = document.getElementById('lessons-panel');
+  const { lessons, vocab, homework } = allLessonsCache;
+  if (!lessons.length) { el.innerHTML = '<p class="empty">No lessons yet.</p>'; return; }
+
+  const groups = {};
+  lessons.forEach(l => {
+    const key = l.lesson_date || '__unknown';
+    if (!groups[key]) groups[key] = [];
+    groups[key].push(l);
+  });
+
+  const keys = Object.keys(groups).sort((a, b) => {
+    if (a === '__unknown') return 1;
+    if (b === '__unknown') return -1;
+    return b.localeCompare(a);
+  });
+
+  let html = '';
+  keys.forEach(key => {
+    html += '<div class="date-group">';
+    html += '<p class="date-header">' + (key === '__unknown' ? 'Date unknown' : esc(fmt(key))) + '</p>';
+    groups[key].forEach((lesson, idx) => {
+      const lv = vocab.filter(v => v.lesson_id === lesson.id);
+      const lh = homework.filter(h => h.lesson_id === lesson.id);
+      const badge = lesson.file_type || 'notes';
+      const uid = key + '_' + idx;
+
+      html += '<div class="lesson-row">';
+      html += '<div class="lesson-header" onclick="toggleLesson(\'' + uid + '\')">';
+      html += '<span class="lesson-topic-text">' + esc(lesson.topic || 'Untitled') + '</span>';
+      html += '<span class="file-badge ' + badge + '">' + badge + '</span>';
+      if (lesson.doc_url) {
+        html += '<a href="' + esc(lesson.doc_url) + '" target="_blank" onclick="event.stopPropagation()" style="font-size:13px;color:var(--accent);text-decoration:none;font-weight:500">&#8599;</a>';
+      }
+      html += '<span class="expand-icon" id="icon-' + uid + '">&#9662;</span>';
+      html += '</div>';
+
+      html += '<div class="lesson-body" id="body-' + uid + '">';
+      if (lv.length) {
+        html += '<div class="body-section">';
+        html += '<p class="body-section-label">Vocabulary (' + lv.length + ')</p>';
+        html += '<div class="vocab-grid">';
+        lv.forEach(v => {
+          html += '<div class="vocab-item"><span class="word">' + esc(v.word) + '</span>';
+          if (v.definition) html += '<p class="definition">' + esc(v.definition) + '</p>';
+          html += '</div>';
+        });
+        html += '</div></div>';
+      }
+      if (lh.length) {
+        html += '<div class="body-section">';
+        html += '<p class="body-section-label">Homework (' + lh.length + ')</p>';
+        html += '<ul class="hw-list">';
+        lh.forEach(h => {
+          html += '<li class="hw-item"><span class="hw-dot"></span>';
+          html += '<span class="hw-text">' + esc(h.description);
+          if (h.url) html += '<a class="hw-link" href="' + esc(h.url) + '" target="_blank">&#8599; Link</a>';
+          html += '</span>';
+          if (h.due_date) html += '<span class="hw-due">Due ' + fmt(h.due_date) + '</span>';
+          html += '</li>';
+        });
+        html += '</ul></div>';
+      }
+      if (!lv.length && !lh.length) {
+        html += '<p style="padding-top:12px;font-size:13px;color:var(--hint)">No vocabulary or homework stored.</p>';
+      }
+      html += '</div>'; // lesson-body
+      html += '</div>'; // lesson-row
+    });
+    html += '</div>'; // date-group
+  });
+
+  el.innerHTML = html;
+}
+
+function toggleLesson(uid) {
+  const body = document.getElementById('body-' + uid);
+  const icon = document.getElementById('icon-' + uid);
+  const isOpen = body.classList.contains('open');
+  body.classList.toggle('open', !isOpen);
+  icon.innerHTML = isOpen ? '&#9662;' : '&#9652;';
+}
+
+// ---- Tab 3: Vocabulary ----
+
+let allVocab = [], allLessonsForVocab = [];
 
 async function loadVocab() {
   const el = document.getElementById('vocab-panel');
+  if (allVocab.length) { renderVocab('', ''); return; }
   el.innerHTML = '<p class="loading">Loading vocabulary</p>';
   try {
     const d = await fetchApi('vocabulary');
-    allLessons = d.lessons || [];
+    allLessonsForVocab = d.lessons || [];
     allVocab = d.vocab || [];
     renderVocab('', '');
   } catch(e) {
-    el.innerHTML = '<div class="error">Error: ' + e.message + '</div>';
+    el.innerHTML = '<div class="error">Error: ' + esc(e.message) + '</div>';
   }
 }
 
 function renderVocab(search, topic) {
   const el = document.getElementById('vocab-panel');
-  const topics = [...new Set(allLessons.map(l => l.topic).filter(Boolean))];
+  const topics = [...new Set(allLessonsForVocab.map(l => l.topic).filter(Boolean))];
 
   let filtered = allVocab;
   if (topic) {
-    const ids = allLessons.filter(l => l.topic === topic).map(l => l.id);
+    const ids = allLessonsForVocab.filter(l => l.topic === topic).map(l => l.id);
     filtered = filtered.filter(v => ids.includes(v.lesson_id));
   }
   if (search) {
@@ -355,20 +437,20 @@ function renderVocab(search, topic) {
   }
 
   let html = '<div class="search-bar">';
-  html += '<input type="text" placeholder="Search words or definitions…" id="vs" value="' + search.replace(/"/g,'&quot;') + '" oninput="renderVocab(this.value,document.getElementById(\'tf\').value)">';
+  html += '<input type="text" placeholder="Search words or definitions…" id="vs" value="' + esc(search) + '" oninput="renderVocab(this.value,document.getElementById(\'tf\').value)">';
   html += '<select id="tf" onchange="renderVocab(document.getElementById(\'vs\').value,this.value)">';
   html += '<option value="">All topics</option>';
-  topics.forEach(t => { html += '<option value="' + t.replace(/"/g,'&quot;') + '"' + (t===topic?' selected':'') + '>' + t + '</option>'; });
+  topics.forEach(t => { html += '<option value="' + esc(t) + '"' + (t===topic?' selected':'') + '>' + esc(t) + '</option>'; });
   html += '</select></div>';
 
   if (!filtered.length) {
     html += '<p class="empty">No vocabulary found.</p>';
   } else {
-    html += '<span class="count-badge">' + filtered.length + ' item' + (filtered.length!==1?'s':'') + '</span>';
+    html += '<span class="count-badge">' + filtered.length + ' word' + (filtered.length!==1?'s':'') + '</span>';
     html += '<div class="card"><div class="vocab-grid">';
     filtered.forEach(v => {
-      html += '<div class="vocab-item"><span class="word">' + v.word + '</span>';
-      if (v.definition) html += '<p class="definition">' + v.definition + '</p>';
+      html += '<div class="vocab-item"><span class="word">' + esc(v.word) + '</span>';
+      if (v.definition) html += '<p class="definition">' + esc(v.definition) + '</p>';
       html += '</div>';
     });
     html += '</div></div>';
@@ -377,12 +459,18 @@ function renderVocab(search, topic) {
   el.innerHTML = html;
 }
 
+// ---- Tab switching ----
+
 function switchTab(tab) {
-  document.querySelectorAll('.tab').forEach((t,i) => t.classList.toggle('active',(i===0&&tab==='prep')||(i===1&&tab==='vocab')));
-  document.getElementById('prep-panel').style.display = tab==='prep'?'':'none';
-  document.getElementById('vocab-panel').style.display = tab==='vocab'?'':'none';
-  if (tab==='prep') loadPrep();
-  if (tab==='vocab' && !allVocab.length) loadVocab();
+  document.querySelectorAll('.tab').forEach((t, i) => {
+    t.classList.toggle('active', ['prep','lessons','vocab'][i] === tab);
+  });
+  document.getElementById('prep-panel').style.display = tab === 'prep' ? '' : 'none';
+  document.getElementById('lessons-panel').style.display = tab === 'lessons' ? '' : 'none';
+  document.getElementById('vocab-panel').style.display = tab === 'vocab' ? '' : 'none';
+  if (tab === 'prep') loadPrep();
+  if (tab === 'lessons') loadAllLessons();
+  if (tab === 'vocab') loadVocab();
 }
 
 loadPrep();

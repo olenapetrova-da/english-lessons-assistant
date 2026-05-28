@@ -6,7 +6,9 @@
 
 ## Backlog
 
-- [ ] **Step 5** — Manual: test data after reprocessing
+- [ ] **Step 5** — Manual: verify data in Supabase (dates, URLs, file_type correct across all 6 lessons)
+
+- [ ] **Step 6 verify** — Test rebuilt frontend in browser across all 3 tabs
   - Check Supabase tables for correct dates, URLs, file_type values
   - Report extraction errors to Claude Code for prompt tuning
 
@@ -44,3 +46,4 @@
 - [x] `help.md` created as project knowledge base (Drive watch expiry, Supabase UPDATE workaround, OAuth vs Service Account)
 - [x] **Step 3** — All 6 files reprocessed with new ENG2 prompt; null date fix applied in Code node (delete null fields before Supabase insert)
 - [x] **Step 4** — `?action=next_lesson` added to Edge Function; Google Calendar API via Service Account; returns date, Meet link, title
+- [x] **Step 6** — Frontend rebuilt: 3 tabs (Lesson prep, All lessons, Vocabulary); next lesson card with Meet button; homework URLs; expandable all-lessons view grouped by date

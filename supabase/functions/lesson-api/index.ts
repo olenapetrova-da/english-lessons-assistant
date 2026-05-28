@@ -74,7 +74,7 @@ Deno.serve(async (req) => {
     const { data: lessons } = await supabase
       .from('lessons')
       .select('id, topic, lesson_date, doc_url')
-      .order('created_at', { ascending: false })
+      .order('lesson_date', { ascending: false })
       .limit(5)
 
     const latest = lessons?.[0] || null
@@ -86,15 +86,32 @@ Deno.serve(async (req) => {
       .order('created_at', { ascending: false })
       .limit(20)
 
-    const prevVocab = prev ? (await supabase
+    const latestVocab = latest ? (await supabase
       .from('vocabulary')
       .select('word, definition, example')
-      .eq('lesson_id', prev.id)
+      .eq('lesson_id', latest.id)
       .limit(40)).data : []
 
-    return new Response(JSON.stringify({ latest, prev, homework: homework || [], prevVocab: prevVocab || [] }), {
+    return new Response(JSON.stringify({ latest, prev, homework: homework || [], latestVocab: latestVocab || [] }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' }
     })
+  }
+
+  if (action === 'all_lessons') {
+    const [lessonsRes, vocabRes, hwRes] = await Promise.all([
+      supabase.from('lessons')
+        .select('id, topic, lesson_date, doc_url, file_type')
+        .order('lesson_date', { ascending: false }),
+      supabase.from('vocabulary')
+        .select('lesson_id, word, definition'),
+      supabase.from('homework')
+        .select('lesson_id, description, due_date, url'),
+    ])
+    return new Response(JSON.stringify({
+      lessons: lessonsRes.data || [],
+      vocab: vocabRes.data || [],
+      homework: hwRes.data || [],
+    }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
   }
 
   if (action === 'vocabulary') {
